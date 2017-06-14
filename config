@@ -1,0 +1,49 @@
+profile_1 = {
+config_directory = ".telegram-cli/profile_1";
+msg_num = true;
+};
+
+profile_2 = {
+config_directory = ".telegram-cli/profile_2";
+msg_num = true;
+};
+
+profile_3 = {
+config_directory = ".telegram-cli/profile_3";
+msg_num = true;
+};
+
+profile_4 = {
+config_directory = ".telegram-cli/profile_4";
+msg_num = true;
+};
+
+profile_5 = {
+config_directory = ".telegram-cli/profile_5";
+msg_num = true;
+};
+
+profile_6 = {
+config_directory = ".telegram-cli/profile_6";
+msg_num = true;
+};
+
+profile_7 = {
+config_directory = ".telegram-cli/profile_7";
+msg_num = true;
+};
+
+profile_8 = {
+config_directory = ".telegram-cli/profile_8";
+msg_num = true;
+};
+
+profile_9 = {
+config_directory = ".telegram-cli/profile_9";
+msg_num = true;
+};
+
+profile_10 = {
+config_directory = ".telegram-cli/profile_10";
+msg_num = true;
+};
