@@ -2,23 +2,23 @@
 
 wget http://raw.githubusercontent.com/bussas/cwbotstuff/master/config
 cp -f config ~/.telegram-cli
-./telegram-cli --json -p profile_1 -P 2000
+./telegram-cli -p profile_1 
 wait
-./telegram-cli --json -p profile_2 -P 2001
+./telegram-cli -p profile_2
 wait
-./telegram-cli --json -p profile_3 -P 2002
+./telegram-cli -p profile_3 
 wait
-./telegram-cli --json -p profile_4 -P 2003
+./telegram-cli -p profile_4
 wait
-./telegram-cli --json -p profile_5 -P 2004
+./telegram-cli -p profile_5
 wait
-./telegram-cli --json -p profile_6 -P 2005
+./telegram-cli -p profile_6
 wait
-./telegram-cli --json -p profile_7 -P 2006
+./telegram-cli -p profile_7
 wait
-./telegram-cli --json -p profile_8 -P 2007
+./telegram-cli -p profile_8
 wait
-./telegram-cli --json -p profile_9 -P 2008
+./telegram-cli -p profile_9
 wait
-./telegram-cli --json -p profile_10 -P 2009
+./telegram-cli -p profile_10
 wait
