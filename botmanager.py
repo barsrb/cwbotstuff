@@ -8,7 +8,7 @@ pathname = os.path.dirname(sys.argv[0])
 fullpath = os.path.abspath(pathname)
 baseconfig = configparser.SafeConfigParser()
 
-baseconfig.read(fullpath + '/config.cfg')
+baseconfig.read(fullpath + '/bmconfig.cfg')
 if baseconfig.has_section('base'):
     castle_name=baseconfig.get('base','castle_name')
     admin_username=baseconfig.get('base','admin_username')
@@ -59,7 +59,7 @@ else:
     baseconfig.set('base','cw_script',str(cw_script))
     baseconfig.set('base','cw_start',str(cw_start))
 
-    with open(fullpath + '/config.cfg','w+') as cfgfile:
+    with open(fullpath + '/bmconfig.cfg','w+') as cfgfile:
         baseconfig.write(cfgfile)
 
 conn = sqlite3.connect('botmanager.db')
