@@ -1,6 +1,6 @@
 #!/bin/bash
 
-wget http://raw.githubusercontent.com/bussas/cwbotstuff/master/config
+wget https://raw.githubusercontent.com/bussas/cwbotstuff/master/multiacc/profiles/config
 cp -f config ~/.telegram-cli
 ./telegram-cli -p profile_1 
 wait
