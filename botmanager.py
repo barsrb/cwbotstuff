@@ -2,7 +2,7 @@ import configparser
 import os
 import sys
 import sqlite3
-
+import subprocess, shlex
 
 pathname = os.path.dirname(sys.argv[0])
 fullpath = os.path.abspath(pathname)
@@ -38,6 +38,7 @@ else:
     order_username = input("Vvedi username komandira (bez @):") or ""
     group_name = input("Vvedi nazvaniye obshey gruppi:") or ""
     port = input("Vvedi nachalniy nomer porta (1400):") or "1400"
+    port = input("Vvedi nachalniy nomer porta (1400):") or "1400"
     tg_cli_bin = input("Vvedi put' do tg-cli bin (/root/tg-cli/bin/telegram-cli):") or "/root/tg-cli/bin/telegram-cli"
     tg_cli_config = input("Vvedi put' do configa tg-cli (/root/.telegram-cli/config):") or "/root/.telegram-cli/config"
     tg_bots_dir = input("Vvedi put' do papki s profilyami botov v tg (/root/bots/tg-cli):") or "/root/bots/tg-cli"
@@ -54,7 +55,7 @@ else:
     baseconfig.set('base','port',str(port))
     baseconfig.set('base','tg_cli_bin',str(tg_cli_bin))
     baseconfig.set('base','tg_cli_config',str(tg_cli_config))
-    caseconfig.set('base','tb_bots_dir',str(tg_bots_dir))
+    baseconfig.set('base','tg_bots_dir',str(tg_bots_dir))
     baseconfig.set('base','tg_start',str(tg_start))
     baseconfig.set('base','cw_script',str(cw_script))
     baseconfig.set('base','cw_start',str(cw_start))
@@ -115,6 +116,9 @@ def update_cfg_files():
     tg_start_f = open (tg_start, 'w')
     cw_start_f = open (cw_start, 'w')
 
+    tg_start_f.write("#!/bin/bash\n")
+    cw_start_f.write("#!/bin/bash\n")
+
     c.execute("SELECT name, castle, admin, orders, groups, port FROM bots WHERE 1;")
     for row in c:
         bot_name = row[0]
@@ -146,14 +150,85 @@ def update_cfg_files():
     os.chmod(tg_start, 0o755)
     os.chmod(cw_start, 0o755)
     conn.close()
-    pass
+
+def manage_bot():
+    conn = sqlite3.connect('botmanager.db')
+    c = conn.cursor()
+
+    c.execute("SELECT id, name, castle, admin, orders, groups, port FROM bots WHERE 1;")
+    print("Vvedi nomer bota:")
+    bot_count = 0;
+    bots={}
+    for row in c:
+        bots[row[0]]={"name":row[1], "castle":row[2], "admin":row[3], "orders":row[4], "groups":row[5], "port":row[6]}
+        print(str(row[0])+") "+row[1])
+
+    bot = input()
+    bot = bots[int(bot)]
+    tg_start_cmd = ("screen -S "+bot['name']+"tg -dm bash -c \""+tg_cli_bin+" -p "+bot['name']+" --json -P "+str(bot['port'])+"\"")
+    tg_stop_cmd = "screen -S "+bot['name']+"tg -X quit"
+    cw_start_cmd = "screen -S "+bot['name']+"cw -dm bash -c \"python3 "+cw_script+" --admin "+bot['admin']+" --castle "+bot['castle']+" --port "+str(bot['port'])+" "
+    if len(bot['orders'])>0:
+        cw_start_cmd = cw_start_cmd + " --order "+bot['orders']
+    if len(bot['groups'])>0:
+        cw_start_cmd = cw_start_cmd + " --group_name "+bot['groups']
+    cw_start_cmd = cw_start_cmd + "\""
+    cw_stop_cmd = "screen -S "+bot['name']+"cw -X quit"
+
+    print (tg_start_cmd)
+    print("Viberite deystvie:")
+    print("1) Ostanovit' tg i cw")
+    print("2) Zapustit' tg i cw")
+    print("3) Ostanovit' tol'ko tg")
+    print("4) Zapustit' tol'ko tg")
+    print("5) Ostanovit' tol'ko cw")
+    print("6) Zapustit' tol'ko cw")
+    print("0) Exit")
+
+    op = input()
+
+    if(op=="1"):
+        process = subprocess.Popen(tg_stop_cmd.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        process = subprocess.Popen(cw_stop_cmd.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+    if(op=="2"):
+        process = subprocess.Popen(shlex.split(tg_start_cmd), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        process = subprocess.Popen(shlex.split(cw_start_cmd), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        pass
+    if(op=="3"):
+        process = subprocess.Popen(tg_stop_cmd.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+    if(op=="4"):
+        process = subprocess.Popen(shlex.split(tg_start_cmd), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+    if(op=="5"):
+        process = subprocess.Popen(cw_stop_cmd.split(), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        pass
+    if(op=="6"):
+#        print(cw_start_cmd)
+        process = subprocess.Popen(shlex.split(cw_start_cmd), stdout=subprocess.PIPE)
+        output, error = process.communicate()
+        pass
+
+    conn.close()
+
+    if(op=="0"):
+        return
+    manage_bot() #recurse, bitch!
 
 if __name__ == '__main__':
     print("1) Dobavit' bota")
     print("2) Izmenit' bota")
     print("3) Obnovit' fayli zapuska")
+    print("4) Upravlenie botom")
     op = input()
     if(op=="1"):
         add_bot()
     if(op=="3"):
         update_cfg_files()
+    if(op=="4"):
+        manage_bot()
