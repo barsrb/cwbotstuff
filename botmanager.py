@@ -114,7 +114,11 @@ def update_cfg_files():
     tg_cli_config_f = open(tg_cli_config, 'w')
     tg_start_f = open (tg_start, 'w')
     cw_start_f = open (cw_start, 'w')
+    
+    tg_start_f.write("#!/bin/bash\n")
+    cw_start_f.write("#!/bin/bash\n")
 
+    
     c.execute("SELECT name, castle, admin, orders, groups, port FROM bots WHERE 1;")
     for row in c:
         bot_name = row[0]
