@@ -54,7 +54,7 @@ else:
     baseconfig.set('base','port',str(port))
     baseconfig.set('base','tg_cli_bin',str(tg_cli_bin))
     baseconfig.set('base','tg_cli_config',str(tg_cli_config))
-    caseconfig.set('base','tb_bots_dir',str(tg_bots_dir))
+    baseconfig.set('base','tg_bots_dir',str(tg_bots_dir))
     baseconfig.set('base','tg_start',str(tg_start))
     baseconfig.set('base','cw_script',str(cw_script))
     baseconfig.set('base','cw_start',str(cw_start))
